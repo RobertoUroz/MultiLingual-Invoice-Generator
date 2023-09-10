@@ -1,0 +1,20 @@
+<!--
+ Copyright (c) 2014, 2020, Oracle and/or its affiliates.
+ The Universal Permissive License (UPL), Version 1.0
+ -->
+  <div class="oj-hybrid-padding" data-oj-binding-provider="none">
+    <h1>Printing Templates Engine</h1>
+    <div>
+      <oj-button on-oj-action="[[pickFile]]">Choose workflow file</oj-button>
+      <oj-button id="processPendingDocuments" on-oj-action="[[processPendingDocuments]]" data-bind="enable: isButtonProcessPendingDocumentsEnabled">Synchronize Pending Documents</oj-button>
+    </div>
+    <img id="myImage" height="400" width="600" style="display: none"/>
+    <div id="wrapper_container" data-oj-binding-provider="none" style="position: absolute; translate(-1000px, 0px)">
+      <iframe id="html_to_pdf_measurements" data-oj-binding-provider="none" style="clear: both; border: 0 none transparent; margin: 0; padding: 0;">
+      </iframe>
+    </div>
+    <div id="canvas_container" data-oj-binding-provider="none" style="position: absolute; translate(-1000px, 0px)">
+      <iframe id="canvas_for_rasterize_html">
+      </iframe>
+    </div>
+  </div>
