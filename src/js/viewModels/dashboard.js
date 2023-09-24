@@ -95,7 +95,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 //             inputData: imageESignature.src
                 //         });
                 //     }
-                }
+                // }
                 //****** Specification of PTE *******//
                 const opts = {
                     "html": self.html_file, //html file as string
