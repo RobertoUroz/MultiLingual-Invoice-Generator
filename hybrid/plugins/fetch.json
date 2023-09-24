@@ -47,14 +47,6 @@
     "is_top_level": true,
     "variables": {}
   },
-  "cordova-plugin-sketch": {
-    "source": {
-      "type": "registry",
-      "id": "cordova-plugin-sketch"
-    },
-    "is_top_level": true,
-    "variables": {}
-  },
   "cordova-plugin-file-opener2": {
     "source": {
       "type": "registry",

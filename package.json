@@ -13,7 +13,8 @@
     "jsbarcode": "^3.11.3",
     "jspdf": "^2.1.1",
     "oci-sdk": "^2.69.0",
-    "rasterizehtml": "^1.3.0"
+    "rasterizehtml": "^1.3.0",
+    "signature_pad": "^4.1.6"
   },
   "devDependencies": {
     "@oracle/oraclejet-tooling": "~8.1.0"

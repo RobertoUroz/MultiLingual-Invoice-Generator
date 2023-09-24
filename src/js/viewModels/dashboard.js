@@ -7,8 +7,8 @@
 /*
  * Your dashboard ViewModel code goes here
  */
-define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'utils', 'ojs/ojbutton'],
-    function (ko, accUtils, printingTemplatesEngine, synchronization, utils) {
+define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'utils', 'signature_pad', 'ojs/ojbutton'],
+    function (ko, accUtils, printingTemplatesEngine, synchronization, utils, SignaturePad) {
 
         function DashboardViewModel() {
             const self = this;
@@ -20,6 +20,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
             self.online = false;
             self.creationDocumentStatusMessage = ko.observable("");
             self.synchronizationStatusMessage = ko.observable("");
+            self.eSignatureUser = ko.observable("");
             self.isButtonProcessPendingDocumentsEnabled = ko.observable(true);
 
             setInterval(function () {
@@ -53,49 +54,30 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 return result;
             }
 
-            self.sketchOnSuccess = function (imageData) {
-                if (imageData == null) {
-                    return;
-                }
-                setTimeout(function () {
-                    // do your thing here!
-                    const image = document.getElementById('myImage');
-                    if (imageData.indexOf("data:image") >= 0) {
-                        image.src = imageData;
-                    } else {
-                        image.src = "data:image/png;base64," + imageData;
-                    }
-                    self.parsedESignatures[self.eSignatureElement].data = image.src;
+            self._setupESignature = function () {
+                self.eSignatureUser(self.parsedESignatures[self.eSignatureElement].name);
+                self.clearSignature();
+            }
+
+            self.clearSignature = function () {
+                self.signaturePad.clear();
+            }
+
+            self.saveSignature = function () {
+                if (self.signaturePad.isEmpty()) {
+                    alert("Please provide a signature first.");
+                } else {
+                    self.parsedESignatures[self.eSignatureElement].data = self.signaturePad.toDataURL("image/jpeg");
                     self.eSignatureElement = self.eSignatureElement + 1;
-                    self.eSignatureReadyForAnotherSignature = true;
-                }, 0);
+                    if (self.eSignatureElement < self.parsedESignatures.length) {
+                        self._setupESignature();
+                    } else {
+                        self._renderPDFDocument();
+                    }
+                }
             }
 
-            self.sketchOnFail = function (message) {
-                setTimeout(function () {
-                    console.log('plugin message: ' + message);
-                }, 0);
-            }
-
-            self._PoCSteps = async function () {
-                self.parsedESignatures = JSON.parse(self.json_file.eSignatures);
-                // let imageESignature = document.getElementById("myImage");
-                // if (self.parsedESignatures.length > 0) {
-                //     console.log("eSignatures found, starting sketch plugin");
-                //     self.eSignatureElement = 0;
-                //     self.eSignatureReadyForAnotherSignature = true;
-                //     console.log("eSignatureElement: " + self.eSignatureElement);
-                //     if (self.eSignatureReadyForAnotherSignature) {
-                //         console.log("eSignatureReadyForAnotherSignature: " + self.eSignatureReadyForAnotherSignature);
-                //         self.eSignatureReadyForAnotherSignature = false;
-                //         navigator.sketch.getSketch(self.sketchOnSuccess, self.sketchOnFail, {
-                //             destinationType: navigator.sketch.DestinationType.DATA_URL,
-                //             encodingType: navigator.sketch.EncodingType.JPEG,
-                //             inputType: navigator.sketch.InputType.FILE_URI,
-                //             inputData: imageESignature.src
-                //         });
-                //     }
-                // }
+            self._renderPDFDocument = async function () {
                 //****** Specification of PTE *******//
                 const opts = {
                     "html": self.html_file, //html file as string
@@ -117,6 +99,14 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     self.savebase64AsPDF(cordova.file.externalRootDirectory, self.makeid(4) + "_pending" + ".pdf", pdf_base64.replace("data:application/pdf;filename=generated.pdf;base64,", ""), "application/pdf");
                 });
                 //*******//
+            }
+
+            self._PoCSteps = async function () {
+                self.parsedESignatures = JSON.parse(self.json_file.eSignatures);
+                self.eSignatureElement = 0;
+                var eSignatureCanvas = document.getElementById("eSignatureCanvas");
+                self.signaturePad = new SignaturePad(eSignatureCanvas);
+                self._setupESignature();
             }
 
             self.savebase64AsPDF = function (folderpath, filename, content, contentType) {

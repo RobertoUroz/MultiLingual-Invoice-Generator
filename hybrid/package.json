@@ -42,7 +42,6 @@
       "cordova-plugin-chooser": {},
       "cordova-plugin-file": {},
       "cordova-plugin-inappbrowser": {},
-      "cordova-plugin-sketch": {},
       "cordova-plugin-file-opener2": {
         "ANDROID_SUPPORT_V4_VERSION": "27.+"
       },

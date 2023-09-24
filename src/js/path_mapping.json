@@ -338,6 +338,18 @@
         "path": "libs/jsbarcode/JsBarcode.all.min.js"
       }
     },
+    "signature_pad": {
+      "cdn": "3rdparty",
+      "cwd": "node_modules/signature_pad/dist",
+      "debug": {
+        "src": [ "**" ],
+        "path": "signature_pad.umd.js"
+      },
+      "release": {
+        "src": [ "**" ],
+        "path": "signature_pad.umd.js"
+      }
+    },
     "tables": {
       "debug": {
         "path": "config/printingtemplates/modules/tables.js"
