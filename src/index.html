@@ -35,13 +35,15 @@
     <!-- This is the main css file for the default Alta theme -->
     <!-- injector:theme -->
     <!--<link rel="stylesheet" href="css/libs/oj/v8.1.0/alta/oj-alta-min.css" type="text/css"/>-->
-    <!-- endinjector 
+    <!-- endinjector -->
     
-    <!-- This contains icon fonts used by the starter template -->
+    <link rel="stylesheet" href="css/libs/oj/v8.1.0/alta/oj-alta-min.css" type="text/css"/>
+
     <link rel="stylesheet" href="css/demo-alta-site-min.css" type="text/css"/>
 
     <!-- This is where you would add any app specific styling -->
     <link rel="stylesheet" href="css/app.css" type="text/css"/>
+
 
   </head>
   <body class="oj-web-applayout-body">
@@ -70,14 +72,14 @@
        ** query size for a phone format and hidden until a user clicks on
        ** the header hamburger icon.
     -->
-      <div id="navDrawer" role="navigation" class="oj-contrast-marker oj-web-applayout-offcanvas oj-offcanvas-start">
-        <oj-navigation-list id="navDrawerList" data="[[navDataProvider]]"
-                            edge="start"
-                            item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"
-                            on-click="[[toggleDrawer]]"
-                            selection="{{router.stateId}}">
-        </oj-navigation-list>
-      </div>
+<!--      <div id="navDrawer" role="navigation" class="oj-contrast-marker oj-web-applayout-offcanvas oj-offcanvas-start">-->
+<!--        <oj-navigation-list id="navDrawerList" data="[[navDataProvider]]"-->
+<!--                            edge="start"-->
+<!--                            item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"-->
+<!--                            on-click="[[toggleDrawer]]"-->
+<!--                            selection="{{router.stateId}}">-->
+<!--        </oj-navigation-list>-->
+<!--      </div>-->
       <div id="pageContent" class="oj-web-applayout-page">
         <!--
          ** Oracle JET V8.1.0 web application header pattern.
@@ -89,14 +91,14 @@
           <div class="oj-web-applayout-max-width oj-flex-bar oj-sm-align-items-center">
             <!-- Offcanvas toggle button -->
           </div>
-          <div role="navigation" class="oj-web-applayout-max-width oj-web-applayout-navbar">
-            <oj-navigation-list id="navTabBar" class="oj-sm-only-hide oj-md-condense oj-md-justify-content-flex-end"
-                                data="[[navDataProvider]]"
-                                edge="top"
-                                item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"
-                                selection="{{router.stateId}}">
-            </oj-navigation-list>
-          </div>
+<!--          <div role="navigation" class="oj-web-applayout-max-width oj-web-applayout-navbar">-->
+<!--            <oj-navigation-list id="navTabBar" class="oj-sm-only-hide oj-md-condense oj-md-justify-content-flex-end"-->
+<!--                                data="[[navDataProvider]]"-->
+<!--                                edge="top"-->
+<!--                                item.renderer="[[KnockoutTemplateUtils.getRenderer('navTemplate', true)]]"-->
+<!--                                selection="{{router.stateId}}">-->
+<!--            </oj-navigation-list>-->
+<!--          </div>-->
         </header>
         <oj-module role="main" class="oj-web-applayout-max-width oj-web-applayout-content" config="[[moduleConfig]]">
         </oj-module>

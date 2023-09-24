@@ -38,7 +38,6 @@
         <allow-intent href="market:*" />
         <preference name="DisallowOverscroll" value="true" />
         <preference name="AndroidLaunchMode" value="singleTask" />
-        <resource-file src="google-services.json" target="/app/google-services.json" />
         <icon height="36" src="res/icon/android/icon-ldpi.png" width="36" />
         <icon height="48" src="res/icon/android/icon-mdpi.png" width="48" />
         <icon height="72" src="res/icon/android/icon-hdpi.png" width="72" />

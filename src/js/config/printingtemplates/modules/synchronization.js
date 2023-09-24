@@ -63,8 +63,11 @@ define(
                 });
             }
 
-            processPendingFiles() {
-                var self = this;
+            processPendingFiles(synchronizationStatusMessage) {
+                const self = this;
+                self.synchronizationStatusMessage = synchronizationStatusMessage;
+                self.synchronizationStatusMessage("Synchronizing pending documents...");
+                self.itemsProcessed = 0;
                 window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
                     directoryEntry.getDirectory("pendingDocuments", { create: false }, function(pendingDirectoryEntry) {
                         const directoryReader = pendingDirectoryEntry.createReader();
@@ -76,30 +79,37 @@ define(
                                        const pdfBase64 = this.result.replace("data:application/pdf;base64,", "data:application/pdf;filename=generated.pdf;base64,");
                                        self._synchronizeToDocumentStorageServer(pdfBase64, entry.name)
                                            .then((result) => {
-                                               self.moveFile(entry);
+                                               self.itemsProcessed++;
+                                               self.moveFile(entry).then(() => {
+                                                   if (entries.length === self.itemsProcessed) {
+                                                       self.synchronizationStatusMessage("Pending documents synchronized");
+                                                   }
+                                               });
                                            })
                                            .catch((error) => {
-
+                                               self.synchronizationStatusMessage("Error synchronizing pending documents");
                                            });
-
                                    };
                                    reader.readAsDataURL(file);
                                 });
                             })
                         })
                     })
-                })
+                }, () => self.synchronizationStatusMessage("Error while synchronizing pending documents"));
             }
 
             moveFile(entry) {
-                var self = this;
-                window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
-                    directoryEntry.getDirectory("synchronizedDocuments", { create: true }, function (syncDirectoryEntry) {
-                        entry.moveTo(syncDirectoryEntry, entry.name, function () {
-                            console.log("File moved:", entry.name);
+                return new Promise((resolve, reject) => {
+                    var self = this;
+                    window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
+                        directoryEntry.getDirectory("synchronizedDocuments", {create: true}, function (syncDirectoryEntry) {
+                            entry.moveTo(syncDirectoryEntry, entry.name, function () {
+                                console.log("File moved:", entry.name);
+                                resolve();
+                            }, self.errorCallback)
                         }, self.errorCallback)
-                    }, self.errorCallback)
-                }, self.errorCallback)
+                    }, self.errorCallback);
+                });
             }
 
             errorCallback(error) {

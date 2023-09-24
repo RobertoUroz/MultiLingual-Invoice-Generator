@@ -23,14 +23,14 @@ define(
        * @param {Object} opts
        */
       doPrintingTemplate(opts) {
-        self = this;
+        const self = this;
         return new Promise(async function (resolve, reject) {
+          self.creationDocumentStatusMessage = opts.creationDocumentStatusMessage;
+
+          self.creationDocumentStatusMessage("Generating PDF...");
+
           var html = printingTemplatesUtils.stringToHTML(opts.html);
           html.body = printingTemplatesUtils.addMissingHeaderAndFooter(html.body);
-          //--- test purposes
-          //for (var child_border of html.body.children)
-          //  child_border.style.border = "1px solid black";
-          //---
 
           var element = html.body;
           var doc = new jspdf.jsPDF(opts.jsPDFOptions);
@@ -65,15 +65,12 @@ define(
           element.innerHTML = printingTemplatesUtils.addTotalPages(element, pages_info.totalPages);
           element.innerHTML = dompurify.sanitize(element.innerHTML);
 
-          //TODO: SHIVA: ADD NEXT LINE FOR TODAY DATE LOGIC
-          //element.innerHTML = self.addTodayDate(element);
-
           //check better for errors
           var valid = printingTemplatesUtils.checkErrors(element);
           if (valid.boolean == false)
             return reject(valid.message);
-          //if (element == undefined || html == undefined || element.innerHTML == undefined)
-          //  return reject("Error with the template, pdf cannot be generated");
+          if (element == undefined || html == undefined || element.innerHTML == undefined)
+            return reject("Error with the template, pdf cannot be generated");
 
           var final_html = dompurify.sanitize(element.innerHTML);
 
@@ -85,7 +82,8 @@ define(
           //render pages and attachments
           await printingTemplatesUtils.drawPages(final_html_DOM, html, wrapper_canvas, doc, opts.attachments, pages_divided.heights, pages_info, styleString);
 
-          const pdf_base64 = await new Promise(function (resolve, reject) {
+          self.creationDocumentStatusMessage("Saving PDF...");
+          const pdf_base64 = await new Promise(function (resolve) {
             const reader = new FileReader();
             reader.onloadend = function () {
               let base64data = reader.result;
@@ -95,7 +93,7 @@ define(
                   pendingDirectoryEntry.getFile(opts.fileName, {create: true}, function (fileEntry) {
                     fileEntry.createWriter(function (fileWriter) {
                       fileWriter.onwriteend = function (e) {
-                        synchronization.startOnlineCheckInterval();
+                        //synchronization.startOnlineCheckInterval();
                         return resolve(base64data);
                       };
                       fileWriter.onerror = function (e) {
@@ -110,6 +108,7 @@ define(
             }
             reader.readAsDataURL(doc.output("blob"));
           });
+          self.creationDocumentStatusMessage("PDF saved");
 
           //clean iframes
           printingTemplatesUtils.clean(opts.iframe_wrapper);

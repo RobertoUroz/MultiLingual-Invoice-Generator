@@ -50,10 +50,7 @@ define(['knockout', 'ojs/ojmodule-element-utils', 'ojs/ojknockouttemplateutils',
        // Router setup
        self.router = Router.rootInstance;
        self.router.configure({
-         'dashboard': { label: 'Dashboard', isDefault: true},
-         'incidents': { label: 'Incidents'},
-         'customers': {label: 'Customers'},
-         'about': {label: 'About'}
+         'dashboard': { label: 'Dashboard', isDefault: true}
        });
       Router.defaults['urlAdapter'] = new Router.urlParamAdapter();
 
@@ -70,13 +67,7 @@ define(['knockout', 'ojs/ojmodule-element-utils', 'ojs/ojknockouttemplateutils',
       // Navigation setup
       var navData = [
       {name: 'Dashboard', id: 'dashboard',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'},
-      {name: 'Incidents', id: 'incidents',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-fire-icon-24'},
-      {name: 'Customers', id: 'customers',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-people-icon-24'},
-      {name: 'About', id: 'about',
-       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-info-icon-24'}
+       iconClass: 'oj-navigationlist-item-icon demo-icon-font-24 demo-chart-icon-24'}
       ];
       self.navDataProvider = new ArrayDataProvider(navData, {keyAttributes: 'id'});
 
@@ -94,7 +85,7 @@ define(['knockout', 'ojs/ojmodule-element-utils', 'ojs/ojknockouttemplateutils',
         return OffcanvasUtils.toggle(self.drawerParams);
       }
       // Add a close listener so we can move focus back to the toggle button when the drawer closes
-      document.getElementById('navDrawer').addEventListener("ojclose", onNavDrawerClose);
+      // document.getElementById('navDrawer').addEventListener("ojclose", onNavDrawerClose);
 
       /*
         - If there is no aria-live announcement, bring focus to the nav-drawer button immediately.

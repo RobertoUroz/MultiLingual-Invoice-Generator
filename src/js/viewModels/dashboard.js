@@ -11,14 +11,15 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
     function (ko, accUtils, printingTemplatesEngine, synchronization, utils) {
 
         function DashboardViewModel() {
-            var self = this;
+            const self = this;
             // Below are a set of the ViewModel methods invoked by the oj-module component.
             // Please reference the oj-module jsDoc for additional information.
 
             self.html_file = "";
             self.json_file = "";
             self.online = false;
-            //self.initialMessage = ko.observable("Waiting for a request to render a document...");
+            self.creationDocumentStatusMessage = ko.observable("");
+            self.synchronizationStatusMessage = ko.observable("");
             self.isButtonProcessPendingDocumentsEnabled = ko.observable(true);
 
             setInterval(function () {
@@ -34,14 +35,12 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     self.html_file = self.file_content[0];
                     self.json_file = JSON.parse(self.file_content[1]);
                     console.log(self.json_file)
-                    //Test
-                    //self.html_file = "<html><body><h1>My First Heading</h1><p>My first paragraph.</p></body></html>";
                     await self._PoCSteps();
                 })();
             }
 
             self.processPendingDocuments = function (event) {
-                synchronization.processPendingFiles();
+                synchronization.processPendingFiles(self.synchronizationStatusMessage);
             }
 
             self.makeid = function (length) {
@@ -60,7 +59,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 }
                 setTimeout(function () {
                     // do your thing here!
-                    var image = document.getElementById('myImage');
+                    const image = document.getElementById('myImage');
                     if (imageData.indexOf("data:image") >= 0) {
                         image.src = imageData;
                     } else {
@@ -68,6 +67,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     }
                     self.parsedESignatures[self.eSignatureElement].data = image.src;
                     self.eSignatureElement = self.eSignatureElement + 1;
+                    self.eSignatureReadyForAnotherSignature = true;
                 }, 0);
             }
 
@@ -77,23 +77,25 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 }, 0);
             }
 
-            //TODO: Promise
             self._PoCSteps = async function () {
                 self.parsedESignatures = JSON.parse(self.json_file.eSignatures);
                 // let imageESignature = document.getElementById("myImage");
                 // if (self.parsedESignatures.length > 0) {
+                //     console.log("eSignatures found, starting sketch plugin");
                 //     self.eSignatureElement = 0;
-                //     imageESignature.style = "display: block";
-                //     while (self.eSignatureElement < self.parsedESignatures.length) {
-                //         await navigator.sketch.getSketch(self.sketchOnSuccess, self.sketchOnFail, {
+                //     self.eSignatureReadyForAnotherSignature = true;
+                //     console.log("eSignatureElement: " + self.eSignatureElement);
+                //     if (self.eSignatureReadyForAnotherSignature) {
+                //         console.log("eSignatureReadyForAnotherSignature: " + self.eSignatureReadyForAnotherSignature);
+                //         self.eSignatureReadyForAnotherSignature = false;
+                //         navigator.sketch.getSketch(self.sketchOnSuccess, self.sketchOnFail, {
                 //             destinationType: navigator.sketch.DestinationType.DATA_URL,
                 //             encodingType: navigator.sketch.EncodingType.JPEG,
                 //             inputType: navigator.sketch.InputType.FILE_URI,
                 //             inputData: imageESignature.src
                 //         });
                 //     }
-                //     imageESignature.style = "display: none";
-                // }
+                }
                 //****** Specification of PTE *******//
                 const opts = {
                     "html": self.html_file, //html file as string
@@ -108,6 +110,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     "iframe_canvas": document.getElementById("canvas_for_rasterize_html"), //iframe that will wrap the canvas for rasterizeHTML, this prevents of getting the styling from the app.
                     "attachments": JSON.parse(self.json_file.attachments), //array of images in base64
                     "fileName": "test.pdf",
+                    "creationDocumentStatusMessage": self.creationDocumentStatusMessage,
                     "styleSheet": undefined //cssFile as string for future implementations
                 }
                 await printingTemplatesEngine.doPrintingTemplate(opts).then(function (pdf_base64) {
@@ -123,6 +126,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     dir.getFile(filename, {create: true}, function (file) {
                         file.createWriter(function (fileWriter) {
                             fileWriter.onwrite = function (evt) {
+                                self.creationDocumentStatusMessage("");
                                 var finalPath = folderpath + filename;
                                 cordova.plugins.fileOpener2.open(finalPath, 'application/pdf');
                             }

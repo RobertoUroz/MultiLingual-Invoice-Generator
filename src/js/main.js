@@ -78,7 +78,6 @@ require(['ojs/ojbootstrap', 'knockout', 'appController', 'ojs/ojrouter', 'ojs/oj
 
                 function init() {
                     cordova.plugins.backgroundMode.enable();
-                    cordova.plugins.backgroundMode.excludeFromTaskList();
                     cordova.plugins.backgroundMode.overrideBackButton();
                     Router.sync().then(
                         function () {
