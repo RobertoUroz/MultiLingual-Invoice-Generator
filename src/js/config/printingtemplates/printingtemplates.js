@@ -41,8 +41,7 @@ define(
           //barcode logic
           element = printingTemplatesUtils.createBarCodes(element);
           //eSignature string
-          if (opts.eSignatures !== null && opts.eSignatures.type !== null && opts.eSignatures.type.toLowerCase() == "string")
-            element = printingTemplatesUtils.addESignature(element, opts.eSignatures);
+          element = printingTemplatesUtils.addESignature(element, opts.eSignatures);
           //maximum width logic
           element.outerHTML = printingTemplatesUtils.setMaximumWidthOfPage(element);
           element.innerHTML = dompurify.sanitize(element.innerHTML);

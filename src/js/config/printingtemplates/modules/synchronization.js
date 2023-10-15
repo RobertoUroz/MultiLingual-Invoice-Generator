@@ -68,6 +68,7 @@ define(
                 self.synchronizationStatusMessage = synchronizationStatusMessage;
                 self.synchronizationStatusMessage("Synchronizing pending documents...");
                 self.itemsProcessed = 0;
+
                 window.resolveLocalFileSystemURL(cordova.file.externalRootDirectory, function (directoryEntry) {
                     directoryEntry.getDirectory("pendingDocuments", { create: false }, function(pendingDirectoryEntry) {
                         const directoryReader = pendingDirectoryEntry.createReader();
@@ -79,12 +80,16 @@ define(
                                        const pdfBase64 = this.result.replace("data:application/pdf;base64,", "data:application/pdf;filename=generated.pdf;base64,");
                                        self._synchronizeToDocumentStorageServer(pdfBase64, entry.name)
                                            .then((result) => {
-                                               self.itemsProcessed++;
-                                               self.moveFile(entry).then(() => {
-                                                   if (entries.length === self.itemsProcessed) {
-                                                       self.synchronizationStatusMessage("Pending documents synchronized");
-                                                   }
-                                               });
+                                               if (result === "token") {
+                                                   self.processPendingFiles(self.synchronizationStatusMessage);
+                                               } else {
+                                                   self.itemsProcessed++;
+                                                   self.moveFile(entry).then(() => {
+                                                       if (entries.length === self.itemsProcessed) {
+                                                           self.synchronizationStatusMessage("Pending documents synchronized");
+                                                       }
+                                                   });
+                                               }
                                            })
                                            .catch((error) => {
                                                self.synchronizationStatusMessage("Error synchronizing pending documents");
@@ -97,6 +102,8 @@ define(
                     })
                 }, () => self.synchronizationStatusMessage("Error while synchronizing pending documents"));
             }
+
+
 
             moveFile(entry) {
                 return new Promise((resolve, reject) => {
@@ -126,19 +133,38 @@ define(
                     apiGatewayUrl: 'https://9aeldzrcab.execute-api.eu-north-1.amazonaws.com/DEV/pte-roberto'
                 }
                 return new Promise((resolve, reject) => {
-                    if (self.accessToken === undefined) {
+                    if (self._accessTokenIsExpired()) {
                         adapterSynchronization.getAccessToken('aws', config).then(accessToken => {
                             self.accessToken = accessToken;
-                            adapterSynchronization.uploadObject('aws', config, self.accessToken, objectData, fileName).then(() => {
-                                resolve(true)
-                            }).catch((e) => reject(e));
+                            resolve("token");
                         }).catch((e) => reject(e));
                     } else {
                         adapterSynchronization.uploadObject('aws', config, self.accessToken, objectData, fileName).then(() => {
-                            resolve(true)
+                            resolve("object");
                         }).catch((e) => reject(e));
                     }
                 });
+            }
+
+            _accessTokenIsExpired() {
+                if (this.accessToken === undefined) {
+                    return true;
+                }
+                const payload = this._parseJwt(this.accessToken);
+                if (payload.exp * 1000 < Date.now() - 5 * 60 * 1000) {
+                    return true;
+                }
+                return false;
+            }
+
+            _parseJwt (token) {
+                var base64Url = token.split('.')[1];
+                var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+                var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+
+                return JSON.parse(jsonPayload);
             }
 
     }

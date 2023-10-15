@@ -67,7 +67,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 if (self.signaturePad.isEmpty()) {
                     alert("Please provide a signature first.");
                 } else {
-                    self.parsedESignatures[self.eSignatureElement].data = self.signaturePad.toDataURL("image/jpeg");
+                    self.parsedESignatures[self.eSignatureElement]["data"] = self.signaturePad.toDataURL("image/jpeg");
                     self.eSignatureElement = self.eSignatureElement + 1;
                     if (self.eSignatureElement < self.parsedESignatures.length) {
                         self._setupESignature();
@@ -91,7 +91,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     "iframe_wrapper": document.getElementById("html_to_pdf_measurements"), //wrapper for all calculations for pages, check dashboard.html to set up this iframe
                     "iframe_canvas": document.getElementById("canvas_for_rasterize_html"), //iframe that will wrap the canvas for rasterizeHTML, this prevents of getting the styling from the app.
                     "attachments": JSON.parse(self.json_file.attachments), //array of images in base64
-                    "fileName": "test.pdf",
+                    "fileName": self.json_file.fileName.substring(self.json_file.fileName.length - 4) === ".pdf" ? self.json_file.fileName : self.json_file.fileName + ".pdf",
                     "creationDocumentStatusMessage": self.creationDocumentStatusMessage,
                     "styleSheet": undefined //cssFile as string for future implementations
                 }
@@ -105,7 +105,9 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 self.parsedESignatures = JSON.parse(self.json_file.eSignatures);
                 self.eSignatureElement = 0;
                 var eSignatureCanvas = document.getElementById("eSignatureCanvas");
-                self.signaturePad = new SignaturePad(eSignatureCanvas);
+                self.signaturePad = new SignaturePad(eSignatureCanvas, {
+                    backgroundColor: 'rgb(255, 255, 255)'
+                });
                 self._setupESignature();
             }
 

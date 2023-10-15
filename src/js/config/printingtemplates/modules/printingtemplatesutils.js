@@ -150,11 +150,9 @@ define(
        * @param {Array} eSignatures
        */
       addESignature(element, eSignatures) {
-        for (var i = 0; i < Object.keys(eSignatures).length; i++) {
-          if (Object.keys(eSignatures)[i] != "type") {
-            var regex = new RegExp("\\[\\[" + Object.keys(eSignatures)[i] + "\\]\\]", "g");
-            element.innerHTML = element.innerHTML.replace(regex, Object.values(eSignatures)[i]);
-          }
+        for (var i = 0; i < eSignatures.length; i++) {
+          var regex = new RegExp("\\[\\[" + eSignatures[i].id + "\\]\\]", "g");
+          element.innerHTML = element.innerHTML.replace(regex, eSignatures[i].data);
         }
         return element;
       }
