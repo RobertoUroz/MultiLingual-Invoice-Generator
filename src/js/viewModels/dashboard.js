@@ -78,6 +78,11 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
             }
 
             self._renderPDFDocument = async function () {
+                //Clear everything related to the e-signatures
+                self.eSignatureUser("");
+                self.clearSignature();
+                self.signaturePad.off();
+
                 //****** Specification of PTE *******//
                 const opts = {
                     "html": self.html_file, //html file as string
@@ -105,9 +110,14 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                 self.parsedESignatures = JSON.parse(self.json_file.eSignatures);
                 self.eSignatureElement = 0;
                 var eSignatureCanvas = document.getElementById("eSignatureCanvas");
-                self.signaturePad = new SignaturePad(eSignatureCanvas, {
-                    backgroundColor: 'rgb(255, 255, 255)'
-                });
+                if (self.signaturePad === undefined) {
+                    self.signaturePad = new SignaturePad(eSignatureCanvas, {
+                        backgroundColor: 'rgb(255, 255, 255)'
+                    });
+                }
+                else {
+                    self.signaturePad.on();
+                }
                 self._setupESignature();
             }
 

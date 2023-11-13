@@ -3,26 +3,25 @@
  The Universal Permissive License (UPL), Version 1.0
  -->
   <div class="oj-hybrid-padding">
-    <h1>Printing Templates Engine</h1>
     <div>
       <oj-button on-oj-action="[[pickFile]]">Begin Creation Document</oj-button>
       <p data-bind="text: creationDocumentStatusMessage"></p>
       <oj-button id="processPendingDocuments" on-oj-action="[[processPendingDocuments]]" data-bind="enable: isButtonProcessPendingDocumentsEnabled">Synchronize Pending Documents</oj-button>
       <p data-bind="text: synchronizationStatusMessage"></p>
     </div>
-    <p data-bind="text: eSignatureUser"></p>
-    <canvas id="eSignatureCanvas" height="100" max-width="100%" style="touch-action: none; user-select: none; border-width: thin">
+    <p data-bind="text: eSignatureUser" style="margin-top: 50px"></p>
+    <canvas id="eSignatureCanvas" height="200" max-width="100%" style="touch-action: none; user-select: none; border: 1px solid black">
     </canvas>
-    <div>
+    <div style="margin-top: 30px">
       <oj-button on-oj-action="[[saveSignature]]">Save Signature</oj-button>
       <oj-button on-oj-action="[[clearSignature]]">Clear Signature</oj-button>
     </div>
-    <div id="wrapper_container" data-oj-binding-provider="none" style="position: absolute; translate(-1000px, 0px)">
-      <iframe id="html_to_pdf_measurements" data-oj-binding-provider="none" style="clear: both; border: 0 none transparent; margin: 0; padding: 0;">
+    <div id="wrapper_container" data-oj-binding-provider="none" style="position: relative">
+      <iframe id="html_to_pdf_measurements" data-oj-binding-provider="none" style="clear: both; border: 0 none transparent; margin: 0; padding: 0; position: absolute; left: 10000px; ">
       </iframe>
     </div>
-    <div id="canvas_container" data-oj-binding-provider="none" style="position: absolute; translate(-1000px, 0px)">
-      <iframe id="canvas_for_rasterize_html">
+    <div id="canvas_container" data-oj-binding-provider="none" style="position: relative">
+      <iframe id="canvas_for_rasterize_html" style="position: absolute; left: 10000px">
       </iframe>
     </div>
   </div>
