@@ -70,7 +70,7 @@ define(
       addRowsToTableStatic(table, rows, check_total, TOTAL_DECIMALS) {
         var order = this.getColumnsOrder(table.tHead), sum = 0;
         for (var tBody of table.tBodies) {
-          if (tBody.rows[0].cells.length == order.length)
+          if (tBody.rows[0].cells.length === order.length)
             sum = sum + this._fillStaticRow(tBody, rows, order, "static_list");
         }
         sum = Math.ceil(sum * Math.pow(10, TOTAL_DECIMALS)) / Math.pow(10, TOTAL_DECIMALS);
@@ -146,7 +146,7 @@ define(
       _fillStaticRow(tBody, rows, order, static_list) {
         var index, cells = [], sum = 0;
         for (var i = 0; i < order.length; i++)
-          if (order[i] == static_list)
+          if (order[i] === static_list)
             index = i;
           else if (order[i].includes("column_condition_"))
             cells.push(i);
@@ -154,7 +154,7 @@ define(
           for (var i = 0; i < row.cells.length; i++) {
             if (cells.includes(i)) {
               var id = order[i].replace("column_condition_", "");
-              if (row.cells[index].innerHTML.trim() in rows[id]) {
+              if (rows[id].includes(row.cells[index].innerHTML.trim())) {
                 row.cells[i].innerHTML = "\u221a";
                 ++sum;
               }

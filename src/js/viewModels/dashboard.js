@@ -100,9 +100,12 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
                     "creationDocumentStatusMessage": self.creationDocumentStatusMessage,
                     "styleSheet": undefined //cssFile as string for future implementations
                 }
+                let startDate = Date.now();
                 await printingTemplatesEngine.doPrintingTemplate(opts).then(function (pdf_base64) {
+                    let endDate = Date.now()
+                    console.log("Seconds elapsed creating the document: " + (endDate - startDate) / 1000);
                     self.savebase64AsPDF(cordova.file.externalRootDirectory, self.makeid(4) + "_pending" + ".pdf", pdf_base64.replace("data:application/pdf;filename=generated.pdf;base64,", ""), "application/pdf");
-                });
+                }).catch(e => self.creationDocumentStatusMessage("There was an error while creating the document."));
                 //*******//
             }
 
