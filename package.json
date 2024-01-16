@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Multilingual Invoice Generator",
   "dependencies": {
-    "@oracle/oraclejet": "~8.1.0",
+    "@oracle/oraclejet": "^8.1.5",
     "canvg": "^3.0.7",
     "dompurify": "^2.0.17",
     "html2canvas": "^1.0.0-rc.7",

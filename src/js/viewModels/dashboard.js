@@ -25,6 +25,7 @@ define(['knockout', 'accUtils', 'printingtemplatesengine', 'synchronization', 'u
 
             setInterval(function () {
                 self.online = utils.checkOnlineStatus();
+                console.log("is Online: " + self.online);
                 self.isButtonProcessPendingDocumentsEnabled(self.online);
             }.bind(this), 2_000);
 

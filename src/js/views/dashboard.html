@@ -6,7 +6,7 @@
     <div>
       <oj-button on-oj-action="[[pickFile]]">Begin Document Creation</oj-button>
       <p data-bind="text: creationDocumentStatusMessage"></p>
-      <oj-button id="processPendingDocuments" on-oj-action="[[processPendingDocuments]]" data-bind="enable: isButtonProcessPendingDocumentsEnabled">Synchronize Pending Documents</oj-button>
+      <oj-button id="processPendingDocuments" on-oj-action="[[processPendingDocuments]]" disabled="{{!isButtonProcessPendingDocumentsEnabled()}}">Synchronize Pending Documents</oj-button>
       <p data-bind="text: synchronizationStatusMessage"></p>
     </div>
     <p data-bind="text: eSignatureUser" style="margin-top: 50px"></p>
